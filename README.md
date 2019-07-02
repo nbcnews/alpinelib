@@ -1,0 +1,1 @@
+# Alpine shared library
