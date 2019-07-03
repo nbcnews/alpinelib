@@ -1,8 +1,9 @@
+from .. import logging
 from botocore.exceptions import ClientError
-from alpinelib.logger import logger
 import boto3
 import json
 
+logger = logging.getFormattedLogger()
 sm = boto3.client('secretsmanager')
 
 
@@ -12,7 +13,7 @@ def get_secret(secret_name):
             SecretId=secret_name
         )
     except ClientError as e:
-        logger().exception("Failed getting {} secret. ErrorCode: {}".format(secret_name, e.response['Error']['Code']))
+        logger.exception("Failed getting {} secret. ErrorCode: {}".format(secret_name, e.response['Error']['Code']))
         raise e
     else:
         return json.loads(get_secret_value_response['SecretString'])
@@ -25,5 +26,5 @@ def update_secret(secret_name, secret):
             SecretString=secret
         )
     except ClientError as e:
-        logger().exception("Failed updating {} secret. ErrorCode: {}".format(secret_name, e.response['Error']['Code']))
+        logger.exception("Failed updating {} secret. ErrorCode: {}".format(secret_name, e.response['Error']['Code']))
         raise e

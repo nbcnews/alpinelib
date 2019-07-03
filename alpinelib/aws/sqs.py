@@ -1,8 +1,9 @@
-from alpinelib.logger import logger
-from alpinelib.aws import aws_lambda
+from . import aws_lambda
+from .. import logging
 import boto3
 import uuid
 
+logger = logging.getFormattedLogger()
 sqs = boto3.resource('sqs')
 
 def fifo_send_message(queue_name, data, group_id):
@@ -14,7 +15,7 @@ def fifo_send_message(queue_name, data, group_id):
             MessageDeduplicationId=str(uuid.uuid4())
         )
     except Exception as e:
-        logger().exception("Failed to send data to sqs {}.".format(data))
+        logger.exception("Failed to send data to sqs {}.".format(data))
         raise e
 
 
@@ -30,7 +31,7 @@ def process_messages(queue_name, function_name):
             else:
                 return
     except Exception as e:
-        logger().exception("Failed processing queue {}.".format(queue_name))
+        logger.exception("Failed processing queue {}.".format(queue_name))
         raise e
 
 
@@ -38,7 +39,7 @@ def get_queue_count(queue_name):
     try:
         queue = sqs.get_queue_by_name(QueueName=queue_name)
     except Exception as e:
-        logger().exception("Failed to get queue count")
+        logger.exception("Failed to get queue count")
         raise e
     else:
         return queue.attributes.get('ApproximateNumberOfMessages')

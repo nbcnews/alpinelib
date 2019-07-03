@@ -1,13 +1,14 @@
-from alpinelib.logger import logger
+from .. import logging
 import boto3
 
+logger = logging.getFormattedLogger()
 comprehend = boto3.client('comprehend')
 
 def detect_entities(text):
     try:
         entities = comprehend.detect_entities(Text=text, LanguageCode='en')
     except Exception as e:
-        logger().exception("Failed calling comprehend entities.")
+        logger.exception("Failed calling comprehend entities.")
         raise e
     else:
         if entities is None: return {}
@@ -20,7 +21,7 @@ def detect_sentiment(text):
     try:
         sentiment = comprehend.detect_sentiment(Text=text, LanguageCode='en')
     except Exception as e:
-        logger().exception("Failed calling comprehend sentiment.")
+        logger.exception("Failed calling comprehend sentiment.")
         raise e
     else:
         if sentiment is None: return {}
