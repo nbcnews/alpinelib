@@ -79,7 +79,7 @@ def move_objects(bucket, source, destination, destination_bucket='', delete_sour
 
     try:
         for obj in filter(lambda x: x.key.endswith(suffix), s3.Bucket(name=bucket).objects.filter(Prefix=source)):
-            dest_key = destination + str(obj.key)[str(obj.key).rfind('/')+1:]
+            dest_key = destination + str(obj.key).split("/", 1)[1]
             if(not destination.endswith('/')):
                 dest_key = destination
 
