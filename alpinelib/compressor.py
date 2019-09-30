@@ -1,5 +1,4 @@
 from . import logging
-from io import BytesIO
 import gzip
 import zlib
 
@@ -18,8 +17,7 @@ def compress_gzip(data):
 
 def uncompress_gzip(obj):
     try:
-        stream = BytesIO(obj['Body'].read())
-        data = gzip.GzipFile(None, 'rb', fileobj=stream).read().decode('utf-8')
+        data = gzip.decompress(obj)
     except Exception as e:
         logger.exception("Failed to uncompress gzip")
         raise e

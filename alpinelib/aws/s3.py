@@ -24,7 +24,7 @@ def path_exists(bucket, object):
         raise e
 
 
-def read_object(bucket, key, decode='utf-8'):
+def read_object(bucket, key, compression_type, decode='utf-8'):
     """Read S3 object body default decoded utf-8"""
     try:
         obj = s3.Object(bucket, key)
@@ -33,6 +33,10 @@ def read_object(bucket, key, decode='utf-8'):
         raise e
     else:
         raw = obj.get()['Body'].read()
+
+        if compression_type == 'gzip':
+            raw = compressor.uncompress_gzip(raw)
+
         if decode is not None:
             return raw.decode(decode)
         else:
@@ -99,12 +103,9 @@ def move_objects(bucket, source, destination, destination_bucket='', delete_sour
 def delete_folder(bucket, prefix):
     """Delete all items under a prefix in S3"""
     try:
-        for object in s3.Bucket(name=bucket).objects.all():
-            if prefix == object.key.split('/')[0]:
-                s3.Object(bucket, object.key).delete()
+        for object in s3.Bucket(name=bucket).objects.filter(Prefix=prefix):
+            s3.Object(bucket, object.key).delete()
     except ClientError as e:
-        logger.exception("Failed to delete folder {} from bucket {}.".format(prefix, bucket))
         raise e
     except Exception as e:
-        logger.exception("Failed to delete folder {} from bucket {}.".format(prefix, bucket))
         raise e
