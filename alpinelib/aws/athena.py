@@ -12,7 +12,7 @@ def poll_status(exetionId):
     while True:
         result = athena.get_query_execution(QueryExecutionId=exetionId)
 
-        if result['QueryExecution']['Status']['State'] != 'RUNNING':
+        if result['QueryExecution']['Status']['State'] not in ['RUNNING', 'QUEUED']:
             return result
 
         time.sleep(5)
