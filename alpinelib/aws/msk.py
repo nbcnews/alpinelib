@@ -21,7 +21,8 @@ def new_producer(producer_name: str, cluster_name: str, **kwargs) -> KafkaProduc
     try:
         if bootstrap_servers:
             logger.info('Attempting to connect to bootstrap server')
-            producer = KafkaProducer(bootstrap_servers=bootstrap_servers, client_id=producer_name, **kwargs)
+            producer = KafkaProducer(bootstrap_servers=bootstrap_servers, client_id=producer_name,
+                                     security_protocol='SSL', api_version = (0,10,0), **kwargs)
             return producer
         else:
             logger.warning("Did not create producer as no bootstrap servers could be found")
