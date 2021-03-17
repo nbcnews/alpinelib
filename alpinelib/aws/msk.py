@@ -29,7 +29,7 @@ def new_producer(producer_name: str, cluster_name: str, **kwargs) -> KafkaProduc
             while not producer.bootstrap_connected() and attempts < MAX_CONN_ATTEMPTS:
                 producer = KafkaProducer(bootstrap_servers=bootstrap_servers, client_id=producer_name,
                                          security_protocol='SSL', api_version=(0, 10, 0), **kwargs)
-                attempts += 1
+                attempts+=1
                 sleep(3)
 
             if producer.bootstrap_connected():
@@ -52,10 +52,11 @@ def _get_cluster_arn(cluster_name: str):
     @return:
     """
     try:
-        clusters = msk_client.list_clusters(ClusterNameFilter=cluster_name)['ClusterInfoList']
+        logger.info("Attempting to list clusters in region {}".format(str(session.Session().region_name)))
+        clusters = msk_client.list_clusters(ClusterNameFilter=cluster_name) #['ClusterInfoList']
         logger.info("found cluster ARN: {}".format(clusters))
         if clusters:
-            return clusters[0].get('ClusterArn')
+            return clusters['ClusterInfoList'][0].get('ClusterArn')
         else:
             logger.info("Didn't find any clusters. Returning empty.")
             return ''
@@ -73,4 +74,5 @@ def _get_broker_tls_string(cluster_name: str):
     except Exception as e:
         logger.exception("Failed to find brokers for cluster {}".format(cluster_name))
         raise e
+
 
