@@ -52,7 +52,6 @@ def _get_cluster_arn(cluster_name: str):
     @return:
     """
     try:
-        logger.info("Attempting to list clusters in region {}".format(str(session.Session().region_name)))
         clusters = msk_client.list_clusters(ClusterNameFilter=cluster_name) #['ClusterInfoList']
         logger.info("found cluster ARN: {}".format(clusters))
         if clusters:
