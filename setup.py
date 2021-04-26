@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='alpinelib',
-    version='1.2',
+    version='1.3',
     author='NBC News BI Team',
     description='Alpine shared library',
     long_description=long_description,
