@@ -4,16 +4,60 @@ from botocore.exceptions import ClientError
 from kafka import KafkaProducer
 from time import sleep
 from alpinelib import logging
-
+import json
+import os
 logger = logging.getFormattedLogger()
 msk_client = client('kafka')
 MAX_CONN_ATTEMPTS = 10
 
-def new_producer(producer_name: str, cluster_name: str, **kwargs) -> KafkaProducer:
+logger = logging.getFormattedLogger()
+
+
+class KafkaClient:
+
+    def __init__(self, producer_name, **kwargs):
+        logger.info("Getting kafka cluster name")
+        self.cluster_name = os.environ.get('kafkaClusterName')
+        logger.info("getting new producer")
+        self.name = producer_name
+        self.params = kwargs
+        self._create_producer()
+
+    def _create_producer(self):
+        self.producer = _new_producer(self.name, self.cluster_name, **self.params)
+
+    def send(self, data: dict, topic: str):
+        '''
+        Takes in a dict, serializes it to JSON, and then sends it to the specified topic.
+        @param data: A dict representing the data to send
+        @param topic: The topic to send data to
+        @return:
+        '''
+        # Is this needed? Probably not but figured a check might be nice?
+        if not self.producer.bootstrap_connected():
+            self._create_producer()
+        value = json.dumps(data).encode('utf-8')
+        self.producer.send(topic=topic, value=value)
+
+    def send_raw(self,data, topic: str):
+        '''
+        Sends the raw data without doing any serialization or encoding.
+        @param data: The data to send
+        @param topic: The topic to send to
+        @return:
+        '''
+        self.producer.send(topic=topic,value=data)
+
+    def flush_and_close(self):
+        self.producer.flush()
+        logger.info("Producer Metrics: {}".format(self.producer.metrics()))
+        self.producer.close()
+
+def _new_producer(producer_name: str, cluster_name: str, **kwargs) -> KafkaProducer:
     """
 
-    @param producer_name:
-    @param cluster_name:
+    @param producer_name: The name the producer will identify itself with to the cluster
+    @param cluster_name: The name of the MSK cluster in AWS
     @param kwargs:
     @return:
     """
@@ -30,7 +74,7 @@ def new_producer(producer_name: str, cluster_name: str, **kwargs) -> KafkaProduc
                 producer = KafkaProducer(bootstrap_servers=bootstrap_servers, client_id=producer_name,
                                          security_protocol='SSL', api_version=(0, 10, 0), **kwargs)
                 attempts+=1
-                sleep(3)
+                sleep(3) # wait 3 seconds to try and create a new one. Could be modified to be exponential backoff
 
             if producer.bootstrap_connected():
                 return producer
