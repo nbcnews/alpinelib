@@ -6,11 +6,10 @@ from time import sleep
 from alpinelib import logging
 import json
 import os
+
 logger = logging.getFormattedLogger()
 msk_client = client('kafka')
 MAX_CONN_ATTEMPTS = 10
-
-logger = logging.getFormattedLogger()
 
 
 class KafkaClient:
