@@ -15,6 +15,11 @@ MAX_CONN_ATTEMPTS = 10
 class KafkaClient:
 
     def __init__(self, producer_name, **kwargs):
+        '''
+
+        @param producer_name:
+        @param kwargs: additional producer configuration parameters
+        '''
         logger.info("Getting kafka cluster name")
         self.cluster_name = os.environ.get('kafkaClusterName')
         logger.info("getting new producer")
