@@ -4,6 +4,7 @@ from botocore.exceptions import ClientError
 from kafka import KafkaProducer
 from time import sleep
 from alpinelib import logging
+from alpinelib.aws.s3 import read_object
 import json
 import os
 
@@ -93,33 +94,14 @@ def _new_producer(producer_name: str, cluster_name: str, **kwargs) -> KafkaProdu
         raise e
 
 
-def _get_cluster_arn(cluster_name: str):
-    """
-
-    @param cluster_name:
-    @return:
-    """
-    try:
-        clusters = msk_client.list_clusters(ClusterNameFilter=cluster_name) #['ClusterInfoList']
-        logger.info("found cluster ARN: {}".format(clusters))
-        if clusters:
-            return clusters['ClusterInfoList'][0].get('ClusterArn')
-        else:
-            logger.info("Didn't find any clusters. Returning empty.")
-            return ''
-    except Exception as e:
-        logger.exception("Failed to find a cluster with name {}".format(cluster_name))
-
 def _get_broker_tls_string(cluster_name: str):
-    cluster_arn = _get_cluster_arn(cluster_name)
     try:
-        if cluster_arn:
-            return msk_client.get_bootstrap_brokers(ClusterArn=cluster_arn).get('BootstrapBrokerStringTls')
-        else:
-            logger.info("Was not passed any cluster ARNs. Cannot find bootstrap server for nonexistent cluster.")
-            return ''
+        return read_object('de-kafka-connections', cluster_name+'.txt')
     except Exception as e:
-        logger.exception("Failed to find brokers for cluster {}".format(cluster_name))
+        message = 'Could not find broker connection file named {} in bucket de-kafka-connections'.format(cluster_name+'.txt')
+        logger.exception(message)
         raise e
+
+
 
 
