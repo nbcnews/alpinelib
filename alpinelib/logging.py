@@ -45,10 +45,14 @@ def getFormattedLogger(enable_splunk=False):
     return logger
 
 def __create_splunk_handler(hostname='UNKNOWN_INGEST'):
-    # could probably remove the default host, as it will error
-    HOST = os.getenv('SPLUNK_HOST') or sm.get_secret('splunk')['HEC_HOST']
+    # could possibly put host and port in Secret as well, but trying
+    # to avoid having to call secret manager, as that requires IAM permissions
+    # and would be a breaking change.
+
+    HOST = os.getenv('SPLUNK_HOST') or 'splunk-hec.nbcnewstools.net'
+    PORT = os.getenv('SPLUNK_PORT') or '443'
     TOKEN = os.getenv('SPLUNK_HEC_TOKEN') or sm.get_secret('splunk')['HEC_TOKEN']
-    handler = SplunkHecHandler(host=HOST, token=TOKEN, port=443, proto='HTTPS',
+    handler = SplunkHecHandler(host=HOST, token=TOKEN, port=PORT, proto='HTTPS',
                                source='Alpine', hostname=hostname)
     handler.setFormatter(json_formatter())
     handler.set_name('splunk')
