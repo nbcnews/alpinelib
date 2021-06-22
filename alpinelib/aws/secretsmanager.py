@@ -1,7 +1,9 @@
-from .. import logging
-from botocore.exceptions import ClientError
-import boto3
 import json
+
+import boto3
+from botocore.exceptions import ClientError
+
+from .. import logging
 
 logger = logging.getFormattedLogger()
 sm = boto3.client('secretsmanager')

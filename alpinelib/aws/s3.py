@@ -1,7 +1,8 @@
-from .. import logging
-from .. import compressor
 import boto3
 from botocore.exceptions import ClientError
+
+from .. import compressor
+from .. import logging
 
 logger = logging.getFormattedLogger()
 s3 = boto3.resource('s3')
@@ -74,13 +75,13 @@ def move_objects(bucket, source, destination, destination_bucket='', delete_sour
         Suffix = Copy or move only matching files with suffix (optional)
     """
 
-    if(destination_bucket.strip() == ''):
+    if (destination_bucket.strip() == ''):
         destination_bucket = bucket
 
     try:
         for obj in filter(lambda x: x.key.endswith(suffix), s3.Bucket(name=bucket).objects.filter(Prefix=source)):
-            dest_key = destination + str(obj.key)[str(obj.key).rfind('/')+1:]
-            if(not destination.endswith('/')):
+            dest_key = destination + str(obj.key)[str(obj.key).rfind('/') + 1:]
+            if (not destination.endswith('/')):
                 dest_key = destination
 
             s3.Object(destination_bucket, dest_key).copy_from(CopySource={'Bucket': bucket, 'Key': obj.key})
