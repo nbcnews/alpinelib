@@ -99,7 +99,6 @@ def _get_broker_tls_string(bucket_name: str, cluster_name: str):
     try:
         return read_object(bucket_name, cluster_name + '.txt')
     except Exception as e:
-        message = 'Could not find broker connection file named {} in bucket de-kafka-connections'.format(
-            cluster_name + '.txt')
+        message = f'Could not find broker connection file named ${cluster_name}.txt in bucket ${bucket_name}'
         logger.exception(message)
         raise e
