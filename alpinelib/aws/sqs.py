@@ -1,10 +1,13 @@
+import uuid
+
+import boto3
+
 from . import aws_lambda
 from .. import logging
-import boto3
-import uuid
 
 logger = logging.getFormattedLogger()
 sqs = boto3.resource('sqs')
+
 
 def fifo_send_message(queue_name, data, group_id):
     queue = sqs.get_queue_by_name(QueueName=queue_name)

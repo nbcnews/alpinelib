@@ -1,8 +1,10 @@
-from .. import logging
 import boto3
+
+from .. import logging
 
 logger = logging.getFormattedLogger()
 comprehend = boto3.client('comprehend')
+
 
 def detect_entities(text):
     try:
@@ -28,4 +30,3 @@ def detect_sentiment(text):
         # Removing responseMetadata - value not meaningful and schema returned is inconsistent
         sentiment.pop('ResponseMetadata', None)
         return sentiment
-

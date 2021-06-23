@@ -1,5 +1,6 @@
-from pythonjsonlogger import jsonlogger
 import logging
+
+from pythonjsonlogger import jsonlogger
 
 
 def getFormattedLogger():
@@ -10,7 +11,7 @@ def getFormattedLogger():
     """
     logger = logging.getLogger()
 
-    if(not logger.handlers):
+    if (not logger.handlers):
         ch = logging.StreamHandler()
         logger.addHandler(ch)
 
@@ -21,6 +22,7 @@ def getFormattedLogger():
     logger.setLevel(logging.INFO)
 
     return logger
+
 
 def json_formatter():
     """

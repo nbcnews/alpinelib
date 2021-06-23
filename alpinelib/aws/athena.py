@@ -1,9 +1,11 @@
-from .. import logging
-import time
-import boto3
 import csv
+import time
 
-logger =  logging.getFormattedLogger()
+import boto3
+
+from .. import logging
+
+logger = logging.getFormattedLogger()
 athena = boto3.client('athena')
 s3 = boto3.resource('s3')
 

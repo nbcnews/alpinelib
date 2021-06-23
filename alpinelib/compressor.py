@@ -1,9 +1,11 @@
-from . import logging
-from io import BytesIO
 import gzip
 import zlib
+from io import BytesIO
+
+from . import logging
 
 logger = logging.getFormattedLogger()
+
 
 def compress_gzip(data):
     try:
