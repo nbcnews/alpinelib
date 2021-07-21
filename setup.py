@@ -14,7 +14,8 @@ setuptools.setup(
     install_requires=[
         'boto3>=1.9.148',
         'python-json-logger>=0.1.11',
-        'numpy~=1.21.1'
+        'numpy~=1.21.1',
+        'nltk~=3.6.2'
     ],
     classifiers=[
         'Programming Language :: Python :: 3',

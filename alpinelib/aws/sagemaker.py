@@ -5,6 +5,8 @@ from typing import List
 import boto3
 import numpy as np
 
+from nltk.corpus import stopwords
+
 
 def __preprocess_text(text: str) -> List[str]:
     """
@@ -14,9 +16,12 @@ def __preprocess_text(text: str) -> List[str]:
     """
     return_list = []
 
+    # Remove words in text that don't matter for NLP purposes
+    stop_words = set(stopwords.words('english'))
+
     for word in text.split(' '):
         stripped_text = re.sub(r'[^\w\s]', '', word.lower())
-        if len(stripped_text) > 0:
+        if len(stripped_text) > 0 and stripped_text not in stop_words:
             return_list.append(stripped_text)
 
     return return_list
