@@ -4,8 +4,11 @@ from typing import List
 
 import boto3
 import numpy as np
+import nltk
 
 from nltk.corpus import stopwords
+
+nltk.download('stopwords')
 
 
 def __preprocess_text(text: str) -> List[str]:
@@ -17,7 +20,7 @@ def __preprocess_text(text: str) -> List[str]:
     return_list = []
 
     # Remove words in text that don't matter for NLP purposes
-    stop_words = set(stopwords.words('english'))
+    stop_words = stopwords.words('english')
 
     for word in text.split(' '):
         stripped_text = re.sub(r'[^\w\s]', '', word.lower())
