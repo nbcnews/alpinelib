@@ -23,7 +23,7 @@ def __preprocess_text(text: str) -> List[str]:
     stop_words = stopwords.words('english')
 
     for word in text.split(' '):
-        stripped_text = re.sub(r'[^\w\s]', '', word.lower())
+        stripped_text = re.sub(r'[^\w]', '', word.lower())
         if len(stripped_text) > 0 and stripped_text not in stop_words:
             return_list.append(stripped_text)
 
