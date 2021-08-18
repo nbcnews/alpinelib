@@ -38,9 +38,10 @@ class KafkaClient:
         @param topic: The topic to send data to
         @return:
         """
-        # Is this needed? Probably not but figured a check might be nice?
-        if not self.producer.bootstrap_connected():
+
+        if not self.producer:
             self._create_producer()
+
         value = json.dumps(data).encode('utf-8')
         self.producer.send(topic=topic, value=value)
 
