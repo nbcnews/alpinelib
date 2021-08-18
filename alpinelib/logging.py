@@ -11,7 +11,7 @@ def getFormattedLogger():
     """
     logger = logging.getLogger()
 
-    if (not logger.handlers):
+    if not logger.handlers:
         ch = logging.StreamHandler()
         logger.addHandler(ch)
 
