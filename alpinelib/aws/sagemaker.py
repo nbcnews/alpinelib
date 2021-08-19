@@ -4,7 +4,7 @@ from typing import List
 import boto3
 
 
-def send_to_ml_preprocess(ml_endpoint: str, bucket: str, file: str) -> List[float]:
+def run_inference(ml_endpoint: str, bucket: str, file: str) -> List[float]:
     """
     Sends the bucket and file name to the ml_endpoint and returns the inference response
     :param ml_endpoint: the endpoint to send data to for inference
