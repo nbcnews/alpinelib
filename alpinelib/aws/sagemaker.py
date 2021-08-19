@@ -1,10 +1,9 @@
 import json
-from typing import List
 
 import boto3
 
 
-def run_inference(ml_endpoint: str, bucket: str, file: str) -> List[float]:
+def run_inference(ml_endpoint: str, bucket: str, file: str):
     """
     Sends the bucket and file name to the ml_endpoint and returns the inference response
     :param ml_endpoint: the endpoint to send data to for inference
